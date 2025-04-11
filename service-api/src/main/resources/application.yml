@@ -1,0 +1,12 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: project112-service-api
+
+springdoc:
+  swagger-ui:
+    path: /swagger
+    operationsSorter: alpha
+    tagsSorter: alpha
