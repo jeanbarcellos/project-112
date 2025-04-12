@@ -21,5 +21,4 @@ public class HelloController {
         return ResponseEntity.ok("Hello Project 112");
     }
 
-
 }
