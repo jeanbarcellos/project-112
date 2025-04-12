@@ -5,6 +5,14 @@ spring:
   application:
     name: project112-service-api
 
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/project112
+
+logging:
+  level:
+    root: INFO
+
 springdoc:
   swagger-ui:
     path: /swagger
