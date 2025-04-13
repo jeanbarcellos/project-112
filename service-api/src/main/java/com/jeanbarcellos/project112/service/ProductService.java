@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.jeanbarcellos.project112.dto.ProductRequest;
 import com.jeanbarcellos.project112.dto.ProductResponse;
+import com.jeanbarcellos.project112.mapper.ProductMapper;
 import com.jeanbarcellos.project112.model.Product;
 import com.jeanbarcellos.project112.repository.ProductRepository;
 
@@ -16,27 +17,23 @@ import reactor.core.publisher.Mono;
 public class ProductService {
 
     private final ProductRepository repository;
+    private final ProductMapper mapper;
 
     public Flux<ProductResponse> findAll() {
         return repository.findAll()
-                .map(product -> new ProductResponse(
-                        product.getId(), product.getName(), product.getDescription(), product.getPrice(),
-                        product.getCategoryId()));
+                .map(mapper::toResponse);
     }
 
     public Mono<ProductResponse> findById(String id) {
         return repository.findById(id)
-                .map(product -> new ProductResponse(
-                        product.getId(), product.getName(), product.getDescription(), product.getPrice(),
-                        product.getCategoryId()));
+                .map(mapper::toResponse);
     }
 
     public Mono<ProductResponse> save(ProductRequest request) {
-        Product product = new Product(null, request.getName(), request.getDescription(), request.getPrice(),
-                request.getCategoryId());
+        Product product = mapper.toEntity(request);
+
         return repository.save(product)
-                .map(p -> new ProductResponse(p.getId(), p.getName(), p.getDescription(), p.getPrice(),
-                        p.getCategoryId()));
+                .map(mapper::toResponse);
     }
 
     public Mono<Void> delete(String id) {

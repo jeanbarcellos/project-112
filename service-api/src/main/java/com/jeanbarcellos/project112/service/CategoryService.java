@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.jeanbarcellos.project112.dto.CategoryRequest;
 import com.jeanbarcellos.project112.dto.CategoryResponse;
+import com.jeanbarcellos.project112.mapper.CategoryMapper;
 import com.jeanbarcellos.project112.model.Category;
 import com.jeanbarcellos.project112.repository.CategoryRepository;
 
@@ -16,19 +17,22 @@ import reactor.core.publisher.Mono;
 public class CategoryService {
 
     private final CategoryRepository repository;
+    private final CategoryMapper mapper;
 
     public Flux<CategoryResponse> findAll() {
-        return repository.findAll().map(category -> new CategoryResponse(category.getId(), category.getName()));
+        return repository.findAll()
+                .map(mapper::toResponse);
     }
 
     public Mono<CategoryResponse> findById(String id) {
-        return repository.findById(id).map(c -> new CategoryResponse(c.getId(), c.getName()));
+        return repository.findById(id)
+                .map(mapper::toResponse);
     }
 
-    public Mono<CategoryResponse> save(CategoryRequest dto) {
-        Category category = new Category(null, dto.getName());
+    public Mono<CategoryResponse> save(CategoryRequest request) {
+        Category category = mapper.toEntity(request);
         return repository.save(category)
-                .map(c -> new CategoryResponse(c.getId(), c.getName()));
+                .map(mapper::toResponse);
     }
 
     public Mono<Void> delete(String id) {
