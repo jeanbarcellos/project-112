@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +13,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.jeanbarcellos.project112.dto.CategoryRequest;
+import com.jeanbarcellos.project112.dto.CategoryResponse;
 import com.jeanbarcellos.project112.mapper.CategoryMapper;
 import com.jeanbarcellos.project112.model.Category;
 import com.jeanbarcellos.project112.repository.CategoryRepository;
@@ -50,6 +52,7 @@ class CategoryServiceTest {
         // Arrange
         Category c1 = new Category("1", "Cat 1");
         Category c2 = new Category("2", "Cat 2");
+
         when(repository.findAll()).thenReturn(Flux.just(c1, c2));
 
         // Act & Assert
@@ -65,6 +68,7 @@ class CategoryServiceTest {
         // Arrange
         String id = "1";
         Category category = new Category(id, "Cat 1");
+
         when(repository.findById(id)).thenReturn(Mono.just(category));
 
         // Act & Assert
@@ -79,6 +83,7 @@ class CategoryServiceTest {
     void findById_nonExistingId_shouldReturnEmpty() {
         // Arrange
         String id = "non-existent";
+
         when(repository.findById(id)).thenReturn(Mono.empty());
 
         // Act & Assert
@@ -89,14 +94,15 @@ class CategoryServiceTest {
     }
 
     @Test
-    void save_validCategoryRequest_shouldReturnSavedCategory() {
+    void create_validCategoryRequest_shouldReturnSavedCategory() {
         // Arrange
         CategoryRequest request = new CategoryRequest("New Category");
         Category savedCategory = new Category("123", "New Category");
+
         when(repository.save(any(Category.class))).thenReturn(Mono.just(savedCategory));
 
         // Act & Assert
-        StepVerifier.create(service.save(request))
+        StepVerifier.create(service.create(request))
                 .expectNextMatches(resp -> resp.getId().equals("123") && resp.getName().equals("New Category"))
                 .verifyComplete();
 
@@ -104,9 +110,35 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("update - Deve atualizar categoria existente")
+    void update_whenCategoryExists_shouldUpdateAndReturnResponse() {
+        // Arrange
+        String id = "123";
+        Category existing = new Category(id, "old-name");
+        CategoryRequest request = new CategoryRequest("new-name");
+        Category updated = new Category(id, "new-name");
+
+        when(repository.findById(id)).thenReturn(Mono.just(existing));
+        when(repository.save(existing)).thenReturn(Mono.just(updated));
+
+        // Act
+        Mono<CategoryResponse> result = service.update(id, request);
+
+        // Assert
+        StepVerifier.create(result)
+                .expectNextMatches(response -> response.getId().equals(id) &&
+                        response.getName().equals("new-name"))
+                .verifyComplete();
+
+        verify(repository).findById(id);
+        verify(repository).save(existing);
+    }
+
+    @Test
     void delete_existingId_shouldDeleteCategory() {
         // Arrange
         String id = "123";
+
         when(repository.deleteById(id)).thenReturn(Mono.empty());
 
         // Act & Assert

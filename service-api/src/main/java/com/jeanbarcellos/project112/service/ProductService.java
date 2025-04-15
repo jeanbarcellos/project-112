@@ -29,10 +29,16 @@ public class ProductService {
                 .map(mapper::toResponse);
     }
 
-    public Mono<ProductResponse> save(ProductRequest request) {
+    public Mono<ProductResponse> create(ProductRequest request) {
         Product product = mapper.toEntity(request);
 
         return repository.save(product)
+                .map(mapper::toResponse);
+    }
+
+    public Mono<ProductResponse> update(String id, ProductRequest request) {
+        return repository.findById(id)
+                .flatMap(entity -> repository.save(mapper.copy(entity, request)))
                 .map(mapper::toResponse);
     }
 

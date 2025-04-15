@@ -16,4 +16,8 @@ public class CategoryMapper {
     public CategoryResponse toResponse(Category entity) {
         return new CategoryResponse(entity.getId(), entity.getName());
     }
+
+    public Category copy(Category entity, CategoryRequest request) {
+        return entity.setName(request.getName());
+    }
 }

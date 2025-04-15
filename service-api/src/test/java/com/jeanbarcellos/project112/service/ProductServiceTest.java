@@ -1,9 +1,11 @@
 package com.jeanbarcellos.project112.service;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,6 +51,7 @@ class ProductServiceTest {
         // Arrange
         Product p1 = new Product("1", "P1", "Desc1", BigDecimal.TEN, "cat1");
         Product p2 = new Product("2", "P2", "Desc2", BigDecimal.ONE, "cat2");
+
         when(repository.findAll()).thenReturn(Flux.just(p1, p2));
 
         // Act & Assert
@@ -62,6 +65,7 @@ class ProductServiceTest {
     void findById_existingId_shouldReturnProduct() {
         // Arrange
         Product product = new Product("1", "P1", "Desc", BigDecimal.TEN, "cat1");
+
         when(repository.findById("1")).thenReturn(Mono.just(product));
 
         // Act & Assert
@@ -81,7 +85,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void save_validRequest_shouldReturnSavedProduct() {
+    void create_validRequest_shouldReturnSavedProduct() {
         // Arrange
         ProductRequest request = new ProductRequest("P1", "Desc", BigDecimal.TEN, "cat1");
         Product product = new Product(null, "P1", "Desc", BigDecimal.TEN, "cat1");
@@ -90,9 +94,34 @@ class ProductServiceTest {
         when(repository.save(product)).thenReturn(Mono.just(saved));
 
         // Act & Assert
-        StepVerifier.create(service.save(request))
+        StepVerifier.create(service.create(request))
                 .expectNext(new ProductResponse("123", "P1", "Desc", BigDecimal.TEN, "cat1"))
                 .verifyComplete();
+    }
+
+    @Test
+    void update_whenProductExists_shouldUpdateAndReturnResponse() {
+        // Arrange
+        String id = "123";
+        Product existing = new Product(id, "old-name", "Desc", BigDecimal.TEN, "cat1");
+        ProductRequest request = new ProductRequest("new-name", "new-desc", BigDecimal.TEN, "cat2");
+        Product updated = new Product(id, "new-name", "new-desc", BigDecimal.TEN, "cat2");
+
+        when(repository.findById(id)).thenReturn(Mono.just(existing));
+        when(repository.save(existing)).thenReturn(Mono.just(updated));
+
+        // Act
+        Mono<ProductResponse> result = service.update(id, request);
+
+        // Assert
+        StepVerifier.create(result)
+                .expectNextMatches(
+                        response -> response.getId().equals(id) &&
+                        response.getName().equals(updated.getName()))
+                .verifyComplete();
+
+        verify(repository).findById(id);
+        verify(repository).save(existing);
     }
 
     @Test

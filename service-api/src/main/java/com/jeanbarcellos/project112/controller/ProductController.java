@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,8 +41,16 @@ public class ProductController {
     }
 
     @PostMapping
-    public Mono<ProductResponse> create(@Valid @RequestBody ProductRequest dto) {
-        return service.save(dto);
+    public Mono<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
+        return service.create(request);
+    }
+
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<ProductResponse>> update(@PathVariable String id,
+            @RequestBody @Valid ProductRequest request) {
+        return service.update(id, request)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

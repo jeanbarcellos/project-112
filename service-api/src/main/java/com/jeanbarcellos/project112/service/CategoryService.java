@@ -29,9 +29,15 @@ public class CategoryService {
                 .map(mapper::toResponse);
     }
 
-    public Mono<CategoryResponse> save(CategoryRequest request) {
+    public Mono<CategoryResponse> create(CategoryRequest request) {
         Category category = mapper.toEntity(request);
         return repository.save(category)
+                .map(mapper::toResponse);
+    }
+
+    public Mono<CategoryResponse> update(String id, CategoryRequest request) {
+        return repository.findById(id)
+                .flatMap(entity -> repository.save(mapper.copy(entity, request)))
                 .map(mapper::toResponse);
     }
 

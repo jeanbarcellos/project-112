@@ -25,4 +25,11 @@ public class ProductMapper {
                 entity.getPrice(),
                 entity.getCategoryId());
     }
+
+    public Product copy(Product entity, ProductRequest request) {
+        return entity.setName(request.getName())
+                .setDescription(request.getDescription())
+                .setPrice(request.getPrice())
+                .setCategoryId(request.getCategoryId());
+    }
 }
