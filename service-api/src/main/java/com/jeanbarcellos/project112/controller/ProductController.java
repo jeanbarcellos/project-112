@@ -29,8 +29,9 @@ public class ProductController {
     private final ProductService service;
 
     @GetMapping
-    public Flux<ProductResponse> getAll() {
-        return service.findAll();
+    public Mono<ResponseEntity<Flux<ProductResponse>>> getAll() {
+        Flux<ProductResponse> products = service.findAll();
+        return Mono.just(ResponseEntity.ok(products));
     }
 
     @GetMapping("/{id}")
@@ -41,8 +42,9 @@ public class ProductController {
     }
 
     @PostMapping
-    public Mono<ProductResponse> create(@Valid @RequestBody ProductRequest request) {
-        return service.create(request);
+    public Mono<ResponseEntity<ProductResponse>> create(@Valid @RequestBody ProductRequest request) {
+        return service.create(request)
+                .map(product -> ResponseEntity.status(201).body(product));
     }
 
     @PutMapping("/{id}")

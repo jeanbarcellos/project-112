@@ -29,8 +29,9 @@ public class CategoryController {
     private final CategoryService service;
 
     @GetMapping
-    public Flux<CategoryResponse> getAll() {
-        return service.findAll();
+    public Mono<ResponseEntity<Flux<CategoryResponse>>> getAll() {
+        Flux<CategoryResponse> cagetories = service.findAll();
+        return Mono.just(ResponseEntity.ok(cagetories));
     }
 
     @GetMapping("/{id}")
@@ -41,8 +42,9 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Mono<CategoryResponse> create(@Valid @RequestBody CategoryRequest request) {
-        return service.create(request);
+    public Mono<ResponseEntity<CategoryResponse>> create(@Valid @RequestBody CategoryRequest request) {
+        return service.create(request)
+                .map(product -> ResponseEntity.status(201).body(product));
     }
 
     @PutMapping("/{id}")

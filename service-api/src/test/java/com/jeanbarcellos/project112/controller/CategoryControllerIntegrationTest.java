@@ -97,7 +97,7 @@ class CategoryControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(validRequest)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isCreated()
                 .expectBody(CategoryResponse.class)
                 .returnResult()
                 .getResponseBody();

@@ -102,7 +102,7 @@ public class ProductControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(validRequest)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isCreated()
                 .expectBody(ProductResponse.class)
                 .returnResult()
                 .getResponseBody();
