@@ -5,10 +5,10 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.jeanbarcellos</groupId>
-  <artifactId>project112</artifactId>
+  <groupId>com.jeanbarcellos.project112</groupId>
+  <artifactId>project112-service-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>project112</name>
+  <name>project112_service-api</name>
   <description>Demo project for Spring Boot</description>
 
   <parent>
