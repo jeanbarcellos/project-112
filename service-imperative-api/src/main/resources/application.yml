@@ -32,6 +32,10 @@ spring:
               create-target: create-schema.sql
               create-source: metadata
 
+  flyway:
+    enabled: true
+    default-schema: project112
+
   jackson:
     default-property-inclusion: non-null
     serialization:
