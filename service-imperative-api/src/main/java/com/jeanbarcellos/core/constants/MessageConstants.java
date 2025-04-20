@@ -20,10 +20,15 @@ public class MessageConstants {
     public static final String MSG_ERROR_VALIDATION = "The data provided is invalid.";
     public static final String MSG_ERROR_VALIDATION_FIELD_LIST = "The field '%s' %s";
 
-    public static final String MSG_ERROR_ENTITY_NOT_FOUND = "There is no %s with the given ID '%s'.";
+    public static final String MGG_ERROR_VALIDATION_JSON_MALFORMATED = "Malformed request or invalid data format."; // Mapping error. Malformed JSON or type mismatch.
+    public static final String MGG_ERROR_VALIDATION_JSON_INVALID_FORMAT = "has invalid type or format";
 
+    public static final String MSG_ERROR_ENTITY_NOT_FOUND = "There is no %s with the given ID '%s'.";
     public static final String MSG_ERROR_OPTIMISTIC_LOCKING = "The current state of the entity changed before you completed the operation. Please try again.";
+
     public static final String MSG_ERROR_REQUEST_IDEMPOTENT = "A request with ID (requestId) '%s' has already been submitted.";
+
+    public static final String MSG_ERROR_HTTP_METHOD_NOT_SUPPORTED = "HTTP method not supported: %s";
 
     // not instantiable
     private MessageConstants() {
