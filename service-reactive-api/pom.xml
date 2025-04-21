@@ -5,9 +5,10 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.jeanbarcellos.project112</groupId>
-  <artifactId>project112_service-reative-api</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>com.jeanbarcellos.project112.servicereactive</groupId>
+  <artifactId>project112-service-reative-api</artifactId>
+  <version>0.0.0-SNAPSHOT</version>
+
   <name>project112_service-reative-api</name>
   <description>Demo project for Spring Boot</description>
 
@@ -47,6 +48,13 @@
     <!-- ******************************************************* -->
     <!-- DEPENDENCIAS DE COMPILACAO E RUNTIME                    -->
     <!-- ******************************************************* -->
+
+    <!-- Core -->
+    <dependency>
+      <groupId>com.jeanbarcellos.project112</groupId>
+      <artifactId>project112-core</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
 
     <!-- Bsic // Web // REST // Metrics -->
     <dependency>
@@ -128,6 +136,7 @@
   <build>
     <plugins>
 
+      <!-- Maven Compiler Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -141,6 +150,7 @@
         </configuration>
       </plugin>
 
+      <!-- Spring Boot Maven Plugin -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -154,6 +164,7 @@
         </configuration>
       </plugin>
 
+      <!-- Jacoco Maven Plugin -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
