@@ -1,8 +1,36 @@
-version: "3.4"
+version: '3.4'
 
 services:
-  database:
-    container_name: project112_database
+  mongo:
+    container_name: project112_mongo
+    image: mongo:5.0
+    restart: always
+    ports:
+      - '27017:27017'
+    networks:
+      - project112_net
+    volumes:
+      - project112_mongo_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: project112
+
+  mongo-express:
+    container_name: project112_mongo-express
+    image: mongo-express:1.0.0-alpha
+    depends_on:
+      - mongo
+    ports:
+      - '8081:8081'
+    networks:
+      - project112_net
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+
+  postgres:
+    container_name: project112_postgres
     image: postgres:14.5
     restart: always
     ports:
@@ -10,30 +38,42 @@ services:
     networks:
       - project112_net
     volumes:
-      - project112_database_data:/var/lib/postgresql/data
+      - project112_postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=project112
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
-  service-api:
-    container_name: project112_service-api
-    image: jeanbarcellos/project112_service-api:latest
+  service-reactive-api:
+    container_name: project112_service-reactive-api
+    image: jeanbarcellos/project112_service-reactive-api:latest
     depends_on:
-      - database
+      - mongo
+    restart: always
     ports:
-      - 8080:8080
+      - 8080:8081
+    networks:
+      - project112_net
+    environment:
+      SPRING_DATA_MONGODB_URI: mongo://mongo:27017/project112
+
+  service-imperative-api:
+    container_name: project112_service-imperative-api
+    image: jeanbarcellos/project112_service-imperative-api:latest
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - 8080:8082
     networks:
       - project112_net
     environment:
       - PORT=8080
-      - DB_HOST=database
+      - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=project112
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-    volumes:
-      - project112_service-api_data:/logs
 
 networks:
   project112_net:
@@ -41,10 +81,10 @@ networks:
     driver: bridge
 
 volumes:
-  project112_database_data:
-    name: project112_database_data
+  project112_postgres_data:
+    name: project112_postgres_data
+    driver: local
+  project112_mongo_data:
+    name: project112_mongo_data
     driver: local
 
-  project112_service-api_data:
-    name: project112_service-api_data
-    driver: local

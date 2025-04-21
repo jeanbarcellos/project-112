@@ -1,24 +1,10 @@
 version: '3.4'
 
 services:
-  postgres:
-    container_name: project112_postgres
-    image: postgres:14.5
-    restart: always
-    ports:
-      - 5532:5432
-    networks:
-      - project112_net
-    volumes:
-      - project112_postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=project112
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-
   mongo:
     container_name: project112_mongo
     image: mongo:5.0
+    restart: always
     ports:
       - '27017:27017'
     networks:
@@ -42,6 +28,22 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: admin
     depends_on:
       - mongo
+
+  postgres:
+    container_name: project112_postgres
+    image: postgres:14.5
+    restart: always
+    ports:
+      - 5532:5432
+    networks:
+      - project112_net
+    volumes:
+      - project112_postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=project112
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
 
 networks:
   project112_net:
