@@ -20,8 +20,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import com.jeanbarcellos.core.constants.MessageConstants;
-import com.jeanbarcellos.core.dto.ErrorResponse;
+import com.jeanbarcellos.project112.core.constants.MessageConstants;
+import com.jeanbarcellos.project112.core.dto.ErrorResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
@@ -92,11 +92,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handle(ServerWebInputException exception) {
         log.error("Server web input error", exception);
 
+        List<String> errors = List.of(exception.getMostSpecificCause().getMessage());
+
         return ResponseEntity
                 .badRequest()
-                .body(ErrorResponse.of(
-                        MessageConstants.MSG_ERROR_VALIDATION,
-                        List.of(exception.getMostSpecificCause().getMessage())));
+                .body(ErrorResponse.of(MessageConstants.MSG_ERROR_VALIDATION, errors));
     }
 
     /**
