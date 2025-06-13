@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ServerWebInputException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleServerWebInput(ServerWebInputException exception) {
+    public Mono<ResponseEntity<ErrorResponse>> handle(ServerWebInputException exception) {
         log.error("Server web input error", exception);
 
         List<String> errors = List.of(exception.getMostSpecificCause().getMessage());
